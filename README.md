@@ -1,2 +1,3 @@
-# go-result
-Result type for Go inspired by the Rust Result type 
+# Result
+
+This Result type for Go is inspired by the Rust Result type.
