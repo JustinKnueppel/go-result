@@ -16,11 +16,11 @@ func Ok[T any](data T) Result[T] {
 }
 
 // Err returns a Result which contains the error value.
-func Err[T any](msg string) Result[T] {
+func Err[T any](err error) Result[T] {
 	var t T
 	return Result[T]{
 		data: t,
-		err:  errors.New(msg),
+		err:  err,
 	}
 }
 
@@ -56,7 +56,7 @@ func (r Result[T]) IsErrAnd(predicate func(error) bool) bool {
 // to a contained `Ok` value, leaving an `Err` value untouched.
 func Map[T any, U any](r Result[T], f func(T) U) Result[U] {
 	if r.IsErr() {
-		return Err[U](r.err.Error())
+		return Err[U](r.err)
 	}
 	return Ok(f(r.data))
 }
@@ -85,7 +85,7 @@ func (r Result[T]) MapErr(f func(error) error) Result[T] {
 	if r.IsOk() {
 		return r
 	}
-	return Err[T](f(r.err).Error())
+	return Err[T](f(r.err))
 }
 
 // Inspect calls the provided closure with the contained
@@ -154,7 +154,7 @@ func (r Result[T]) UnwrapErr() error {
 // returns the `Err` value of the first result.
 func And[T any, U any](r Result[T], other Result[U]) Result[U] {
 	if r.IsErr() {
-		return Err[U](r.err.Error())
+		return Err[U](r.err)
 	}
 	return other
 }
@@ -163,7 +163,7 @@ func And[T any, U any](r Result[T], other Result[U]) Result[U] {
 // the `Err` value of the given result. Also known as monadic bind.
 func AndThen[T any, U any](r Result[T], f func(T) Result[U]) Result[U] {
 	if r.IsErr() {
-		return Err[U](r.err.Error())
+		return Err[U](r.err)
 	}
 	return f(r.data)
 }
@@ -212,12 +212,12 @@ func Contains[T comparable](r Result[T], x T) bool {
 }
 
 // ContainsErr return `true` if the result is an `Err` value
-// containing the given message.
-func (r Result[T]) ContainsErr(msg string) bool {
+// containing the given error.
+func (r Result[T]) ContainsErr(err error) bool {
 	if r.IsOk() {
 		return false
 	}
-	return r.err.Error() == msg
+	return errors.Is(r.err, err)
 }
 
 // Copy returns a value copy of the result.
@@ -228,7 +228,18 @@ func (r Result[T]) Copy() Result[T] {
 // Flatten converts from a Result[Result[T]] to a [Result[T]]
 func Flatten[T any](r Result[Result[T]]) Result[T] {
 	if r.IsErr() {
-		return Err[T](r.err.Error())
+		return Err[T](r.err)
 	}
 	return r.data
+}
+
+// Equal tests deep equality of two results.
+func Equal[T comparable](r, other Result[T]) bool {
+	if r.IsOk() && other.IsOk() {
+		return r.data == other.data
+	}
+	if r.IsErr() && other.IsErr() {
+		return r.err.Error() == other.err.Error()
+	}
+	return false
 }
