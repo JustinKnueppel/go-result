@@ -1,4 +1,4 @@
-# Result
+# Result [![Go Reference](https://pkg.go.dev/badge/github.com/JustinKnueppel/go-result.svg)](https://pkg.go.dev/github.com/JustinKnueppel/go-result)
 
 This Result type for Go is inspired by the [Rust `Result` type](https://doc.rust-lang.org/std/result/enum.Result.html). For the most part, this package implements all of the same functionality as the Rust type. A few differences are that a few methods are implemented as functions rather than methods due to Go not allowing adding a second generic type in a method signature of a generic type, and some methods that are related to Rust specific features such as memory ownership being absent. One design decision made that poses a significant change to the Rust module is that this package's `Result` type does not have a generic type for it's error case, but rather works with native Go `error`s. While a generic would have a similar implementation, it seems appropriate that the idiomatic Go `error`s should persist in a type relating to failure.
 
