@@ -69,7 +69,7 @@ Here we can see the more declarative `main` function. As the errors do not have 
 
 ## Usage
 
-`Result` types should be instantiated via the `Ok` and `Err` constructors only (default is `Ok` with the generic's zero value). Most features of this package are implemented as methods on the `Result` type, but a few that require a second generic type are implemented as functions instead. A few examples of how to use the package follow, but more examples on the same functionality can be found in the [Rust std::result docs](https://doc.rust-lang.org/std/result/enum.Result.html), albeit written in Rust.
+`Result` types should be instantiated via the `Ok(t T)` and `Err(err error)` constructors only (default is `Ok` with the generic's zero value). Most features of this package are implemented as methods on the `Result` type, but a few that require a second generic type are implemented as functions instead. A few examples of how to use the package follow, but more examples on the same functionality can be found in the [Rust std::result docs](https://doc.rust-lang.org/std/result/enum.Result.html), albeit written in Rust.
 
 ### Updating values or errors
 
